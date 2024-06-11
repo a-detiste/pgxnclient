@@ -3,7 +3,10 @@ import shutil
 import tempfile
 import unittest
 
-from mock import patch, Mock
+try:
+    from unittest.mock import patch, Mock
+except ImportError:
+    from mock import patch, Mock
 from six.moves.urllib.parse import quote
 
 from pgxnclient.tar import TarArchive
