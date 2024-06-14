@@ -6,7 +6,7 @@ pgxnclient -- client API stub
 
 # This file is part of the PGXN client
 
-from six.moves.urllib.parse import urlencode
+from urllib.parse import urlencode
 
 from pgxnclient import network
 from pgxnclient.utils import load_json
@@ -14,7 +14,7 @@ from pgxnclient.errors import NetworkError, NotFound, ResourceNotFound
 from pgxnclient.utils.uri import expand_template
 
 
-class Api(object):
+class Api:
     def __init__(self, mirror):
         self.mirror = mirror
 

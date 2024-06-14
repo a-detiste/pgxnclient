@@ -30,14 +30,12 @@ with open(os.path.join(here, 'README.rst')) as f:
     long_description = f.read()
 
 # External dependencies, depending on the Python version
-requires = ['six']
+requires = []
 setup_requires = ['pytest-runner']
-tests_require = ['mock', 'pytest']
+tests_require = ['pytest']
 
-if sys.version_info < (2, 7):
-    raise ValueError("PGXN client requires at least Python 2.7")
-if (3,) < sys.version_info < (3, 4):
-    raise ValueError("PGXN client requires at least Python 3.4")
+if sys.version_info < (3, 6):
+    raise ValueError("PGXN client requires at least Python 3.6")
 
 
 classifiers = """
@@ -47,7 +45,7 @@ Intended Audience :: Developers
 Intended Audience :: System Administrators
 License :: OSI Approved :: BSD License
 Operating System :: POSIX
-Programming Language :: Python :: 2
+Programming Language :: Python
 Programming Language :: Python :: 3
 Topic :: Database
 """
@@ -105,7 +103,7 @@ setup(
     },
     license='BSD',
     # NOTE: keep consistent with docs/install.txt
-    python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*',
+    python_requires='>=3.6',
     packages=find_packages(exclude=["tests"]),
     package_data={'pgxnclient': ['libexec/*']},
     entry_points={
@@ -121,5 +119,5 @@ setup(
     tests_require=tests_require,
     version=version,
     cmdclass={'build_py': CustomBuildPy},
-    extras_require={'dev': ['pytest', 'mock', 'black']},
+    extras_require={'dev': ['pytest', 'black']},
 )

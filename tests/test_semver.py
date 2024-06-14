@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import unittest
 
 from pgxnclient import SemVer
@@ -61,10 +59,10 @@ class SemVerTestCase(unittest.TestCase):
         ]:
             self.assertEqual(SemVer(s1), SemVer(s2))
             self.assertEqual(hash(SemVer(s1)), hash(SemVer(s2)))
-            self.assert_(
+            self.assertTrue(
                 SemVer(s1) <= SemVer(s2), "%s <= %s failed" % (s1, s2)
             )
-            self.assert_(
+            self.assertTrue(
                 SemVer(s1) >= SemVer(s2), "%s >= %s failed" % (s1, s2)
             )
 
@@ -93,14 +91,14 @@ class SemVerTestCase(unittest.TestCase):
             ('2.2.2-rc-2', '2.2.2-RC-1'),
             ('0.9.10', '0.9.9'),
         ]:
-            self.assert_(
+            self.assertTrue(
                 SemVer(s1) >= SemVer(s2), "%s >= %s failed" % (s1, s2)
             )
-            self.assert_(SemVer(s1) > SemVer(s2), "%s > %s failed" % (s1, s2))
-            self.assert_(
+            self.assertTrue(SemVer(s1) > SemVer(s2), "%s > %s failed" % (s1, s2))
+            self.assertTrue(
                 SemVer(s2) <= SemVer(s1), "%s <= %s failed" % (s2, s1)
             )
-            self.assert_(SemVer(s2) < SemVer(s1), "%s < %s failed" % (s2, s1))
+            self.assertTrue(SemVer(s2) < SemVer(s1), "%s < %s failed" % (s2, s1))
 
     def test_clean(self):
         for s1, s2 in [

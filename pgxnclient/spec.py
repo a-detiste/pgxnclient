@@ -9,7 +9,7 @@ pgxnclient -- specification object
 
 import os
 import re
-from six.moves.urllib.parse import unquote_plus
+from urllib.parse import unquote_plus
 import operator as _op
 
 from pgxnclient.i18n import _
@@ -19,7 +19,7 @@ from pgxnclient.utils.semver import SemVer
 from pgxnclient.utils.strings import Term
 
 
-class Spec(object):
+class Spec:
     """A name together with a range of versions."""
 
     # Available release statuses.

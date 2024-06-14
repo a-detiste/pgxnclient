@@ -11,8 +11,6 @@ import logging
 import textwrap
 import xml.sax.saxutils as saxutils
 
-import six
-
 from pgxnclient import SemVer
 from pgxnclient.i18n import _, N_
 from pgxnclient.utils import emit
@@ -138,7 +136,7 @@ class Search(Command):
 
         # Convert numerical entities
         excerpt = re.sub(
-            r'\&\#(\d+)\;', lambda c: six.unichr(int(c.group(1))), excerpt
+            r'\&\#(\d+)\;', lambda c: chr(int(c.group(1))), excerpt
         )
 
         # Hilight found terms

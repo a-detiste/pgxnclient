@@ -5,8 +5,8 @@ The files downloaded are used by the test suite.
 """
 import os
 import sys
-from six.moves.urllib.parse import quote
-from six.moves.urllib.request import urlopen
+from urllib.parse import quote
+from urllib.request import urlopen
 
 if __name__ == '__main__':
     url = sys.argv[1]

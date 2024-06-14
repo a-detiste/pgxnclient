@@ -17,8 +17,6 @@ import logging
 import argparse
 from subprocess import Popen, PIPE
 
-import six
-
 from pgxnclient.utils import load_json, find_executable
 
 from pgxnclient import __version__
@@ -148,7 +146,7 @@ class CommandType(type):
         super(CommandType, cls).__init__(name, bases, dct)
 
 
-class Command(six.with_metaclass(CommandType, object)):
+class Command(metaclass=CommandType):
     """
     Base class to implement client commands.
 
@@ -254,7 +252,7 @@ class Command(six.with_metaclass(CommandType, object)):
             return True
 
         while 1:
-            ans = six.moves.input(_("%s [y/N] ") % prompt)
+            ans = input(_("%s [y/N] ") % prompt)
             if _('no').startswith(ans.lower()):
                 raise UserAbort(_("operation interrupted on user request"))
             elif _('yes').startswith(ans.lower()):
@@ -273,7 +271,7 @@ class Command(six.with_metaclass(CommandType, object)):
         try:
             return Popen(cmd, *args, **kwargs)
         except OSError as e:
-            if not isinstance(cmd, six.string_types):
+            if not isinstance(cmd, str):
                 cmd = ' '.join(cmd)
             msg = _("%s running command: %s") % (e, cmd)
             raise ProcessError(msg)
@@ -541,7 +539,7 @@ SPEC may also be an url specifying a protocol such as 'http://' or 'https://'.
         return super(WithSpecUrl, self).get_spec(**kwargs)
 
 
-class WithPgConfig(object):
+class WithPgConfig:
     """
     Mixin to implement commands that should query :program:`pg_config`.
     """
@@ -654,7 +652,7 @@ class WithMake(WithPgConfig):
             [self.get_make(), 'PG_CONFIG=%s' % self.get_pg_config()]
         )
 
-        if isinstance(cmd, six.string_types):
+        if isinstance(cmd, str):
             cmdline.append(cmd)
         else:  # a list
             cmdline.extend(cmd)
@@ -713,7 +711,7 @@ class WithMake(WithPgConfig):
         return 'gmake'
 
 
-class WithSudo(object):
+class WithSudo:
     """
     Mixin to implement commands that may invoke sudo.
     """
@@ -748,7 +746,7 @@ class WithSudo(object):
         return subp
 
 
-class WithDatabase(object):
+class WithDatabase:
     """
     Mixin to implement commands that should communicate to a database.
     """

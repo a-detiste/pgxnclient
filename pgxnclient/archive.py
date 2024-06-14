@@ -34,7 +34,7 @@ def from_file(filename):
     )
 
 
-class Archive(object):
+class Archive:
     """Base class to handle archives."""
 
     def __init__(self, filename):

@@ -2,12 +2,8 @@ import os
 import shutil
 import tempfile
 import unittest
-
-try:
-    from unittest.mock import patch, Mock
-except ImportError:
-    from mock import patch, Mock
-from six.moves.urllib.parse import quote
+from urllib.parse import quote
+from unittest.mock import patch, Mock
 
 from pgxnclient.tar import TarArchive
 from pgxnclient.zip import ZipArchive
@@ -19,7 +15,7 @@ from pgxnclient.errors import (
 from .testutils import ifunlink, get_test_filename
 
 
-class FakeFile(object):
+class FakeFile:
     def __init__(self, *args):
         self._f = open(*args)
         self.url = None
@@ -192,13 +188,13 @@ class DownloadTestCase(unittest.TestCase):
         mock.side_effect = fake_get_file
 
         fn = 'foobar-0.42.1.zip'
-        self.assert_(not os.path.exists(fn))
+        self.assertTrue(not os.path.exists(fn))
 
         from pgxnclient.cli import main
 
         try:
             main(['download', 'foobar'])
-            self.assert_(os.path.exists(fn))
+            self.assertTrue(os.path.exists(fn))
         finally:
             ifunlink(fn)
 
@@ -207,13 +203,13 @@ class DownloadTestCase(unittest.TestCase):
         mock.side_effect = fake_get_file
 
         fn = 'foobar-0.43.2b1.zip'
-        self.assert_(not os.path.exists(fn))
+        self.assertTrue(not os.path.exists(fn))
 
         from pgxnclient.cli import main
 
         try:
             main(['download', '--testing', 'foobar'])
-            self.assert_(os.path.exists(fn))
+            self.assertTrue(os.path.exists(fn))
         finally:
             ifunlink(fn)
 
@@ -222,7 +218,7 @@ class DownloadTestCase(unittest.TestCase):
         mock.side_effect = fake_get_file
 
         fn = 'foobar-0.43.2b1.zip'
-        self.assert_(not os.path.exists(fn))
+        self.assertTrue(not os.path.exists(fn))
 
         from pgxnclient.cli import main
 
@@ -233,7 +229,7 @@ class DownloadTestCase(unittest.TestCase):
                     'https://api.pgxn.org/dist/foobar/0.43.2b1/foobar-0.43.2b1.zip',
                 ]
             )
-            self.assert_(os.path.exists(fn))
+            self.assertTrue(os.path.exists(fn))
         finally:
             ifunlink(fn)
 
@@ -242,13 +238,13 @@ class DownloadTestCase(unittest.TestCase):
         mock.side_effect = fake_get_file
 
         fn = 'pg_amqp-0.3.0.zip'
-        self.assert_(not os.path.exists(fn))
+        self.assertTrue(not os.path.exists(fn))
 
         from pgxnclient.cli import main
 
         try:
             main(['download', 'amqp'])
-            self.assert_(os.path.exists(fn))
+            self.assertTrue(os.path.exists(fn))
         finally:
             ifunlink(fn)
 
@@ -261,7 +257,7 @@ class DownloadTestCase(unittest.TestCase):
         fn2 = 'foobar-0.42.1-2.zip'
 
         for tmp in (fn, fn1, fn2):
-            self.assert_(not os.path.exists(tmp))
+            self.assertTrue(not os.path.exists(tmp))
 
         try:
             f = open(fn, "w")
@@ -271,14 +267,14 @@ class DownloadTestCase(unittest.TestCase):
             from pgxnclient.cli import main
 
             main(['download', 'foobar'])
-            self.assert_(os.path.exists(fn1))
-            self.assert_(not os.path.exists(fn2))
+            self.assertTrue(os.path.exists(fn1))
+            self.assertTrue(not os.path.exists(fn2))
 
             main(['download', 'foobar'])
-            self.assert_(os.path.exists(fn2))
+            self.assertTrue(os.path.exists(fn2))
 
             f = open(fn)
-            self.assertEquals(f.read(), 'test')
+            self.assertEqual(f.read(), 'test')
             f.close()
 
         finally:
@@ -299,7 +295,7 @@ class DownloadTestCase(unittest.TestCase):
         mock.side_effect = fakefake
 
         fn = 'foobar-0.42.1.zip'
-        self.assert_(not os.path.exists(fn))
+        self.assertTrue(not os.path.exists(fn))
 
         try:
             from pgxnclient.cli import main
@@ -307,7 +303,7 @@ class DownloadTestCase(unittest.TestCase):
 
             self.assertRaises(BadChecksum, main, ['download', 'foobar'])
 
-            self.assert_(not os.path.exists(fn))
+            self.assertTrue(not os.path.exists(fn))
 
         finally:
             ifunlink(fn)
@@ -317,19 +313,19 @@ class DownloadTestCase(unittest.TestCase):
         mock.side_effect = fake_get_file
 
         fn = 'pyrseas-0.4.1.zip'
-        self.assert_(not os.path.exists(fn))
+        self.assertTrue(not os.path.exists(fn))
 
         from pgxnclient.cli import main
 
         try:
             main(['download', 'pyrseas'])
-            self.assert_(os.path.exists(fn))
+            self.assertTrue(os.path.exists(fn))
         finally:
             ifunlink(fn)
 
         try:
             main(['download', 'Pyrseas'])
-            self.assert_(os.path.exists(fn))
+            self.assertTrue(os.path.exists(fn))
         finally:
             ifunlink(fn)
 
@@ -438,7 +434,7 @@ class DownloadTestCase(unittest.TestCase):
             self.assertEqual(res, cmd.get_best_version(data, spec))
 
 
-class Assertions(object):
+class Assertions:
 
     make = object()
 
@@ -484,7 +480,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
 
         main(['install', '--sudo', '--', 'foobar'])
 
-        self.assertEquals(self.mock_popen.call_count, 2)
+        self.assertEqual(self.mock_popen.call_count, 2)
         self.assertCallArgs(
             [self.make], self.mock_popen.call_args_list[0][0][0][:1]
         )
@@ -506,7 +502,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
 
         main(['install', 'foobar'])
 
-        self.assertEquals(self.mock_popen.call_count, 2)
+        self.assertEqual(self.mock_popen.call_count, 2)
         self.assertCallArgs(
             [self.make], self.mock_popen.call_args_list[0][0][0][:1]
         )
@@ -528,7 +524,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
             ]
         )
 
-        self.assertEquals(self.mock_popen.call_count, 2)
+        self.assertEqual(self.mock_popen.call_count, 2)
         self.assertCallArgs(
             [self.make], self.mock_popen.call_args_list[0][0][0][:1]
         )
@@ -546,7 +542,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
 
         self.assertRaises(PgxnClientException, main, ['install', 'foobar'])
 
-        self.assertEquals(self.mock_popen.call_count, 1)
+        self.assertEqual(self.mock_popen.call_count, 1)
 
     def test_install_bad_sha1(self):
         def fakefake(url):
@@ -575,7 +571,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
 
         main(['install', '--nosudo', 'foobar'])
 
-        self.assertEquals(self.mock_popen.call_count, 2)
+        self.assertEqual(self.mock_popen.call_count, 2)
         self.assertCallArgs(
             [self.make], self.mock_popen.call_args_list[0][0][0][:1]
         )
@@ -588,7 +584,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
 
         main(['install', '--sudo', 'gksudo -d "hello world"', 'foobar'])
 
-        self.assertEquals(self.mock_popen.call_count, 2)
+        self.assertEqual(self.mock_popen.call_count, 2)
         self.assertCallArgs(
             [self.make], self.mock_popen.call_args_list[0][0][0][:1]
         )
@@ -606,7 +602,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
 
         main(['install', '--sudo', '--', fn])
 
-        self.assertEquals(self.mock_popen.call_count, 2)
+        self.assertEqual(self.mock_popen.call_count, 2)
         self.assertCallArgs(
             [self.make], self.mock_popen.call_args_list[0][0][0][:1]
         )
@@ -615,7 +611,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
         )
         make_cwd = self.mock_popen.call_args_list[1][1]['cwd']
 
-        self.assertEquals(mock_unpack.call_count, 1)
+        self.assertEqual(mock_unpack.call_count, 1)
         (tmpdir,) = mock_unpack.call_args[0]
         self.assertEqual(make_cwd, os.path.join(tmpdir, 'foobar-0.42.1'))
 
@@ -628,7 +624,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
 
         main(['install', '--sudo', '--', fn])
 
-        self.assertEquals(self.mock_popen.call_count, 2)
+        self.assertEqual(self.mock_popen.call_count, 2)
         self.assertCallArgs(
             [self.make], self.mock_popen.call_args_list[0][0][0][:1]
         )
@@ -637,7 +633,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
         )
         make_cwd = self.mock_popen.call_args_list[1][1]['cwd']
 
-        self.assertEquals(mock_unpack.call_count, 1)
+        self.assertEqual(mock_unpack.call_count, 1)
         (tmpdir,) = mock_unpack.call_args[0]
         self.assertEqual(make_cwd, os.path.join(tmpdir, 'foobar-0.42.1'))
 
@@ -649,7 +645,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
 
         main(['install', '--sudo', '--', url])
 
-        self.assertEquals(self.mock_popen.call_count, 2)
+        self.assertEqual(self.mock_popen.call_count, 2)
         self.assertCallArgs(
             [self.make], self.mock_popen.call_args_list[0][0][0][:1]
         )
@@ -673,7 +669,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
         finally:
             shutil.rmtree(tdir)
 
-        self.assertEquals(self.mock_popen.call_count, 2)
+        self.assertEqual(self.mock_popen.call_count, 2)
         self.assertCallArgs(
             [self.make], self.mock_popen.call_args_list[0][0][0][:1]
         )
@@ -681,7 +677,7 @@ class InstallTestCase(unittest.TestCase, Assertions):
         self.assertCallArgs(
             ['sudo', self.make], self.mock_popen.call_args_list[1][0][0][:2]
         )
-        self.assertEquals(dir, self.mock_popen.call_args_list[1][1]['cwd'])
+        self.assertEqual(dir, self.mock_popen.call_args_list[1][1]['cwd'])
 
 
 class CheckTestCase(unittest.TestCase, Assertions):
@@ -708,7 +704,7 @@ class CheckTestCase(unittest.TestCase, Assertions):
 
         main(['check', 'foobar'])
 
-        self.assertEquals(self.mock_popen.call_count, 1)
+        self.assertEqual(self.mock_popen.call_count, 1)
         self.assertCallArgs(
             [self.make], self.mock_popen.call_args_list[0][0][0][:1]
         )
@@ -723,7 +719,7 @@ class CheckTestCase(unittest.TestCase, Assertions):
             ]
         )
 
-        self.assertEquals(self.mock_popen.call_count, 1)
+        self.assertEqual(self.mock_popen.call_count, 1)
         self.assertCallArgs(
             [self.make], self.mock_popen.call_args_list[0][0][0][:1]
         )
@@ -735,7 +731,7 @@ class CheckTestCase(unittest.TestCase, Assertions):
 
         self.assertRaises(PgxnClientException, main, ['check', 'foobar'])
 
-        self.assertEquals(self.mock_popen.call_count, 1)
+        self.assertEqual(self.mock_popen.call_count, 1)
 
     def test_check_diff_moved(self):
         def create_regression_files(*args, **kwargs):
@@ -747,11 +743,11 @@ class CheckTestCase(unittest.TestCase, Assertions):
         self.mock_popen.side_effect = create_regression_files
         self.mock_popen.return_value.returncode = 1
 
-        self.assert_(
+        self.assertTrue(
             not os.path.exists('regression.out'),
             "Please remove temp file 'regression.out' from current dir",
         )
-        self.assert_(
+        self.assertTrue(
             not os.path.exists('regression.diffs'),
             "Please remove temp file 'regression.diffs' from current dir",
         )
@@ -760,9 +756,9 @@ class CheckTestCase(unittest.TestCase, Assertions):
 
         try:
             self.assertRaises(PgxnClientException, main, ['check', 'foobar'])
-            self.assertEquals(self.mock_popen.call_count, 1)
-            self.assert_(os.path.exists('regression.out'))
-            self.assert_(os.path.exists('regression.diffs'))
+            self.assertEqual(self.mock_popen.call_count, 1)
+            self.assertTrue(os.path.exists('regression.out'))
+            self.assertTrue(os.path.exists('regression.diffs'))
         finally:
             ifunlink('regression.out')
             ifunlink('regression.diffs')
@@ -784,7 +780,7 @@ class CheckTestCase(unittest.TestCase, Assertions):
 
         self.assertRaises(BadChecksum, main, ['check', 'foobar'])
 
-        self.assertEquals(self.mock_popen.call_count, 0)
+        self.assertEqual(self.mock_popen.call_count, 0)
 
 
 class LoadTestCase(unittest.TestCase):
@@ -813,11 +809,11 @@ class LoadTestCase(unittest.TestCase):
         from pgxnclient.commands.install import Load
 
         cmd = Load(None)
-        self.assertEquals((9, 0, 3), cmd.parse_pg_version('90003'))
-        self.assertEquals((9, 1, 0), cmd.parse_pg_version('90100'))
-        self.assertEquals((10, 0), cmd.parse_pg_version('100000'))
-        self.assertEquals((13, 2), cmd.parse_pg_version('130002'))
-        self.assertEquals((13, 2), cmd.parse_pg_version('130002\n'))
+        self.assertEqual((9, 0, 3), cmd.parse_pg_version('90003'))
+        self.assertEqual((9, 1, 0), cmd.parse_pg_version('90100'))
+        self.assertEqual((10, 0), cmd.parse_pg_version('100000'))
+        self.assertEqual((13, 2), cmd.parse_pg_version('130002'))
+        self.assertEqual((13, 2), cmd.parse_pg_version('130002\n'))
 
     @patch('pgxnclient.network.get_file')
     def test_check_psql_options(self, mock_get):
@@ -852,11 +848,11 @@ class LoadTestCase(unittest.TestCase):
 
         main(['load', '--yes', get_test_filename('foobar-0.42.1.zip')])
 
-        self.assertEquals(mock_unpack.call_count, 0)
-        self.assertEquals(self.mock_popen.call_count, 1)
-        self.assert_('psql' in self.mock_popen.call_args[0][0][0])
+        self.assertEqual(mock_unpack.call_count, 0)
+        self.assertEqual(self.mock_popen.call_count, 1)
+        self.assertTrue('psql' in self.mock_popen.call_args[0][0][0])
         communicate = self.mock_popen.return_value.communicate
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args[0][0], b'CREATE EXTENSION foobar;'
         )
 
@@ -870,11 +866,11 @@ class LoadTestCase(unittest.TestCase):
 
         main(['load', '--yes', get_test_filename('foobar-0.42.1.tar.gz')])
 
-        self.assertEquals(mock_unpack.call_count, 0)
-        self.assertEquals(self.mock_popen.call_count, 1)
-        self.assert_('psql' in self.mock_popen.call_args[0][0][0])
+        self.assertEqual(mock_unpack.call_count, 0)
+        self.assertEqual(self.mock_popen.call_count, 1)
+        self.assertTrue('psql' in self.mock_popen.call_args[0][0][0])
         communicate = self.mock_popen.return_value.communicate
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args[0][0], b'CREATE EXTENSION foobar;'
         )
 
@@ -895,10 +891,10 @@ class LoadTestCase(unittest.TestCase):
         finally:
             shutil.rmtree(tdir)
 
-        self.assertEquals(self.mock_popen.call_count, 1)
-        self.assert_('psql' in self.mock_popen.call_args[0][0][0])
+        self.assertEqual(self.mock_popen.call_count, 1)
+        self.assertTrue('psql' in self.mock_popen.call_args[0][0][0])
         communicate = self.mock_popen.return_value.communicate
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args[0][0], b'CREATE EXTENSION foobar;'
         )
 
@@ -918,11 +914,11 @@ class LoadTestCase(unittest.TestCase):
             ]
         )
 
-        self.assertEquals(mock_unpack.call_count, 0)
-        self.assertEquals(self.mock_popen.call_count, 1)
-        self.assert_('psql' in self.mock_popen.call_args[0][0][0])
+        self.assertEqual(mock_unpack.call_count, 0)
+        self.assertEqual(self.mock_popen.call_count, 1)
+        self.assertTrue('psql' in self.mock_popen.call_args[0][0][0])
         communicate = self.mock_popen.return_value.communicate
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args[0][0], b'CREATE EXTENSION foobar;'
         )
 
@@ -936,11 +932,11 @@ class LoadTestCase(unittest.TestCase):
 
         main(['load', '--yes', 'https://example.org/foobar-0.42.1.tar.gz'])
 
-        self.assertEquals(mock_unpack.call_count, 0)
-        self.assertEquals(self.mock_popen.call_count, 1)
-        self.assert_('psql' in self.mock_popen.call_args[0][0][0])
+        self.assertEqual(mock_unpack.call_count, 0)
+        self.assertEqual(self.mock_popen.call_count, 1)
+        self.assertTrue('psql' in self.mock_popen.call_args[0][0][0])
         communicate = self.mock_popen.return_value.communicate
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args[0][0], b'CREATE EXTENSION foobar;'
         )
 
@@ -962,19 +958,19 @@ class LoadTestCase(unittest.TestCase):
         finally:
             shutil.rmtree(tdir)
 
-        self.assertEquals(self.mock_popen.call_count, 4)
-        self.assert_('psql' in self.mock_popen.call_args[0][0][0])
+        self.assertEqual(self.mock_popen.call_count, 4)
+        self.assertTrue('psql' in self.mock_popen.call_args[0][0][0])
         communicate = self.mock_popen.return_value.communicate
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[0][0][0], b'CREATE EXTENSION foo;'
         )
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[1][0][0], b'CREATE EXTENSION bar;'
         )
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[2][0][0], b'CREATE EXTENSION baz;'
         )
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[3][0][0], b'CREATE EXTENSION qux;'
         )
 
@@ -996,19 +992,19 @@ class LoadTestCase(unittest.TestCase):
         finally:
             shutil.rmtree(tdir)
 
-        self.assertEquals(self.mock_popen.call_count, 4)
-        self.assert_('psql' in self.mock_popen.call_args[0][0][0])
+        self.assertEqual(self.mock_popen.call_count, 4)
+        self.assertTrue('psql' in self.mock_popen.call_args[0][0][0])
         communicate = self.mock_popen.return_value.communicate
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[0][0][0], b'DROP EXTENSION qux;'
         )
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[1][0][0], b'DROP EXTENSION baz;'
         )
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[2][0][0], b'DROP EXTENSION bar;'
         )
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[3][0][0], b'DROP EXTENSION foo;'
         )
 
@@ -1030,13 +1026,13 @@ class LoadTestCase(unittest.TestCase):
         finally:
             shutil.rmtree(tdir)
 
-        self.assertEquals(self.mock_popen.call_count, 2)
-        self.assert_('psql' in self.mock_popen.call_args[0][0][0])
+        self.assertEqual(self.mock_popen.call_count, 2)
+        self.assertTrue('psql' in self.mock_popen.call_args[0][0][0])
         communicate = self.mock_popen.return_value.communicate
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[0][0][0], b'CREATE EXTENSION baz;'
         )
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[1][0][0], b'CREATE EXTENSION foo;'
         )
 
@@ -1058,13 +1054,13 @@ class LoadTestCase(unittest.TestCase):
         finally:
             shutil.rmtree(tdir)
 
-        self.assertEquals(self.mock_popen.call_count, 2)
-        self.assert_('psql' in self.mock_popen.call_args[0][0][0])
+        self.assertEqual(self.mock_popen.call_count, 2)
+        self.assertTrue('psql' in self.mock_popen.call_args[0][0][0])
         communicate = self.mock_popen.return_value.communicate
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[0][0][0], b'DROP EXTENSION baz;'
         )
-        self.assertEquals(
+        self.assertEqual(
             communicate.call_args_list[1][0][0], b'DROP EXTENSION foo;'
         )
 
@@ -1088,7 +1084,7 @@ class LoadTestCase(unittest.TestCase):
         finally:
             shutil.rmtree(tdir)
 
-        self.assertEquals(self.mock_popen.call_count, 0)
+        self.assertEqual(self.mock_popen.call_count, 0)
 
     def test_unload_missing(self):
         tdir = tempfile.mkdtemp()
@@ -1112,7 +1108,7 @@ class LoadTestCase(unittest.TestCase):
         finally:
             shutil.rmtree(tdir)
 
-        self.assertEquals(self.mock_popen.call_count, 0)
+        self.assertEqual(self.mock_popen.call_count, 0)
 
     def test_missing_meta_dir(self):
         # issue #19

@@ -6,9 +6,6 @@ pgxnclient -- misc utilities package
 
 # This file is part of the PGXN client
 
-
-from __future__ import print_function
-
 __all__ = ['emit', 'load_json', 'load_jsons', 'sha1', 'find_executable']
 
 
@@ -19,8 +16,6 @@ from collections import OrderedDict
 
 # Import the sha1 object without warnings
 from hashlib import sha1
-
-import six
 
 
 def emit(s=b'', file=None):
@@ -36,7 +31,7 @@ def emit(s=b'', file=None):
 
     enc = file.encoding or 'ascii'
 
-    if isinstance(s, six.text_type):
+    if isinstance(s, str):
         s = s.encode(enc, 'replace')
 
     # OTOH, printing bytes on Py3 to stdout/stderr will barf as well...
@@ -50,7 +45,7 @@ def emit(s=b'', file=None):
 
 def load_json(f):
     data = f.read()
-    if not isinstance(data, six.text_type):
+    if not isinstance(data, str):
         data = data.decode('utf-8')
     return load_jsons(data)
 

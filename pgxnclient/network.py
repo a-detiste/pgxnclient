@@ -7,9 +7,9 @@ pgxnclient -- network interaction
 # This file is part of the PGXN client
 
 import os
-from six.moves.urllib.request import build_opener
-from six.moves.urllib.error import HTTPError, URLError
-from six.moves.urllib.parse import urlsplit
+from urllib.request import build_opener
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlsplit
 from itertools import count
 from contextlib import closing
 
